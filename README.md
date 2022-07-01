@@ -2,6 +2,13 @@
 
 learn ALB to Lambda integration
 
+## Notes
+
+- AWS provided DNSName for the ALB is of the format `xxxxxxx.us-east-1.elb.amazonaws.com`
+- the ALB DNSName does not provide SSL termination by default
+- you cannot request a certificate for the ALB DNSName (`xxxxxxx.us-east-1.elb.amazonaws.com`) via ACM
+- you can specify a single certificate for your `AWS::ElasticLoadBalancingV2::Listener` via the [`AWS::ElasticLoadBalancingV2::Listener Certificate`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-elasticloadbalancingv2-listener-certificate.html) property.  If you need multipe certificates, use [`AWS::ElasticLoadBalancingV2::ListenerCertificate`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenercertificate.html)
+
 ## Demo
 
 > based on [alexcasalboni/template.yml](https://gist.github.com/alexcasalboni/9f118ac10a59a5c4eb6bfd75d0a65773) - AWS ALB - AWS Lambda integration with CloudFormation (YAML)
@@ -71,8 +78,17 @@ sam delete --no-prompts
 
 ![](https://www.evernote.com/l/AAFKcNmrSp9LmromFVQwcH5E6g6vEBMCVfsB/image.png)
 
+![](https://www.evernote.com/l/AAHZyI_kncBHdIAJSo7CUt2-cZkVikQ1vSwB/image.png)
+
 ## Resources
 
 - [alexcasalboni/template.yml](https://gist.github.com/alexcasalboni/9f118ac10a59a5c4eb6bfd75d0a65773) - AWS ALB - AWS Lambda integration with CloudFormation (YAML)
 - [Lambda functions as targets for Application Load Balancers](https://aws.amazon.com/blogs/networking-and-content-delivery/lambda-functions-as-targets-for-application-load-balancers/)
 - [Application Load Balancer can now Invoke Lambda Functions to Serve HTTP(S) Requests](https://aws.amazon.com/about-aws/whats-new/2018/11/alb-can-now-invoke-lambda-functions-to-serve-https-requests/)
+- [One Load Balancer to rule them all](https://blog.deleu.dev/one-load-balancer-to-rule-them-all/)
+- [How do I associate multiple ACM SSL or TLS certificates with Application Load Balancer using CloudFormation?](https://aws.amazon.com/premiumsupport/knowledge-center/cloudformation-ssl-tls-certificates-alb/)
+- [AWS::ElasticLoadBalancingV2::LoadBalancer](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html)
+- [AWS::ElasticLoadBalancingV2::Listener](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html)
+- [AWS::ElasticLoadBalancingV2::ListenerCertificate](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenercertificate.html)
+- [AWS::ElasticLoadBalancingV2::ListenerRule](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html)
+- [AWS::ElasticLoadBalancingV2::TargetGroup](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html)

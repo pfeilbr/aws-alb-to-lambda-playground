@@ -55,6 +55,26 @@ Resources:
         - TargetGroupArn: !Ref myTargetGroup
           Type: forward
 
+  # ListenerHTTPS:
+  #   Type: AWS::ElasticLoadBalancingV2::Listener
+  #   Properties:
+  #     Certificates:
+  #       - CertificateArn: !Ref Certificate
+  #     LoadBalancerArn: !Ref myLoadBalancer
+  #     Port: 443
+  #     Protocol: HTTPS
+  #     DefaultActions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref myTargetGroup
+
+  # Certificate:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !GetAtt myLoadBalancer.DNSName
+  #     DomainValidationOptions:
+  #       - DomainName: !GetAtt myLoadBalancer.DNSName
+  #         ValidationDomain: !GetAtt myLoadBalancer.DNSName
+
   LoadBalancerAPIDispatchRule:
     Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
     Properties:
