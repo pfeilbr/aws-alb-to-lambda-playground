@@ -26,7 +26,7 @@ Resources:
             "headers": {
               "Content-Type": "text/html; charset=utf-8"
             },
-            "body": "<h1>Hello from Lambda via ALB</h1>"
+            "body": `<h1>Hello from Lambda via ALB</h1><pre><code>${JSON.stringify(event, null, 2)}</code></pre>`
           }
           return response;
         }

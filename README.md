@@ -14,13 +14,34 @@ sam deploy
 
 # check our ALB andpoint
 curl http://aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com
-# output: <h1>Hello from Lambda via ALB</h1>
+# output:
+# <h1>Hello from Lambda via ALB</h1><pre><code>{
+#   "requestContext": {
+#     "elb": {
+#       "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:529276214230:targetgroup/aws-a-myTar-1OF41QMSUR19N/c81f17d663a5ef3a"
+#     }
+#   },
+#   "httpMethod": "GET",
+#   "path": "/",
+#   "queryStringParameters": {},
+#   "headers": {
+#     "accept": "*/*",
+#     "host": "aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com",
+#     "user-agent": "curl/7.79.1",
+#     "x-amzn-trace-id": "Root=1-62bf13a2-7ec6c217009df4474336906d",
+#     "x-forwarded-for": "100.11.104.251",
+#     "x-forwarded-port": "80",
+#     "x-forwarded-proto": "http"
+#   },
+#   "body": "",
+#   "isBase64Encoded": false
+# }</code></pre>
 
 # clean up
 sam delete --no-prompts
 ```
 
-![](https://www.evernote.com/l/AAFfE-cFcjhHeZjv-CsGf-xQ7BbXmSFryYYB/image.png)
+![](https://www.evernote.com/l/AAFKcNmrSp9LmromFVQwcH5E6g6vEBMCVfsB/image.png)
 
 ## Resources
 
