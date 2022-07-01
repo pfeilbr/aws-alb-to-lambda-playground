@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "aws-alb-to-lambda-playground"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-13v3pefdyn46p"
+s3_prefix = "aws-alb-to-lambda-playground"
+region = "us-east-1"
+profile = "root-AWSAdministratorAccess"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

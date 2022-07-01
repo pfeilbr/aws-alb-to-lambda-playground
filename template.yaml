@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Default: subnet-4700526d,subnet-af5052d9
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-2708bf40
+
+Resources:
+
+  myFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs16.x
+      InlineCode: |
+        exports.handler =  async function(event, context) {
+          console.log("EVENT: \n" + JSON.stringify(event, null, 2))
+          const response = {
+            "statusCode": 200,
+            "statusDescription": "200 OK",
+            "isBase64Encoded": false,
+            "headers": {
+              "Content-Type": "text/html; charset=utf-8"
+            },
+            "body": "<h1>Hello from Lambda via ALB</h1>"
+          }
+          return response;
+        }
+
+  myLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing 
+      Subnets: !Ref Subnets      
+      SecurityGroups: [!Ref mySecurityGroup]
+
+  myTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: myLambdaPermission
+    Properties:
+      TargetType: lambda
+      Targets:
+        - Id: !GetAtt myFunction.Arn
+
+  myHttpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref myLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - TargetGroupArn: !Ref myTargetGroup
+          Type: forward
+
+  mySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http on port 80
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  myLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt myFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: elasticloadbalancing.amazonaws.com
+
+Outputs:
+  DNSName:
+    Value: !GetAtt myLoadBalancer.DNSName
