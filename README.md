@@ -14,6 +14,7 @@ sam deploy
 
 # check our ALB andpoint
 curl http://aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com
+
 # output:
 # <h1>Hello from Lambda via ALB</h1><pre><code>{
 #   "requestContext": {
@@ -36,6 +37,33 @@ curl http://aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com
 #   "body": "",
 #   "isBase64Encoded": false
 # }</code></pre>
+
+# check path based listener (`/api/*`)
+curl http://aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com/api/hello
+
+# output:
+# <h1>Hello from Lambda via ALB</h1><pre><code>{
+#   "requestContext": {
+#     "elb": {
+#       "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:529276214230:targetgroup/aws-a-myTar-1OF41QMSUR19N/c81f17d663a5ef3a"
+#     }
+#   },
+#   "httpMethod": "GET",
+#   "path": "/api/hello",
+#   "queryStringParameters": {},
+#   "headers": {
+#     "accept": "*/*",
+#     "host": "aws-a-myLoa-MFYJ9QBS4CCL-673155384.us-east-1.elb.amazonaws.com",
+#     "user-agent": "curl/7.79.1",
+#     "x-amzn-trace-id": "Root=1-62bf27ec-5b6861564ac9b30938dd1e67",
+#     "x-forwarded-for": "100.11.104.251",
+#     "x-forwarded-port": "80",
+#     "x-forwarded-proto": "http"
+#   },
+#   "body": "",
+#   "isBase64Encoded": false
+# }</code></pre>       
+
 
 # clean up
 sam delete --no-prompts

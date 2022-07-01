@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion : '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
@@ -10,7 +10,6 @@ Parameters:
     Default: vpc-2708bf40
 
 Resources:
-
   myFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -34,8 +33,8 @@ Resources:
   myLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Scheme: internet-facing 
-      Subnets: !Ref Subnets      
+      Scheme: internet-facing
+      Subnets: !Ref Subnets
       SecurityGroups: [!Ref mySecurityGroup]
 
   myTargetGroup:
@@ -55,6 +54,20 @@ Resources:
       DefaultActions:
         - TargetGroupArn: !Ref myTargetGroup
           Type: forward
+
+  LoadBalancerAPIDispatchRule:
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    Properties:
+      ListenerArn: !Ref myHttpListener
+      Priority: 10
+      Conditions:
+        - Field: "path-pattern"
+          Values:
+            - "/api/*"
+      Actions:
+        - Type: "forward"
+          Order: 100
+          TargetGroupArn: !Ref myTargetGroup
 
   mySecurityGroup:
     Type: AWS::EC2::SecurityGroup
