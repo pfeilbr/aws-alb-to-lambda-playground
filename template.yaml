@@ -8,6 +8,13 @@ Parameters:
   VpcId:
     Type: AWS::EC2::VPC::Id
     Default: vpc-2708bf40
+  DomainName:
+    Type: String
+    Default: alb01.allthecloudbits.com
+  HostedZoneId:
+    Type: String
+    Default: ZB6VME2IL0QTH
+
 
 Resources:
   myFunction:
@@ -55,25 +62,36 @@ Resources:
         - TargetGroupArn: !Ref myTargetGroup
           Type: forward
 
-  # ListenerHTTPS:
-  #   Type: AWS::ElasticLoadBalancingV2::Listener
-  #   Properties:
-  #     Certificates:
-  #       - CertificateArn: !Ref Certificate
-  #     LoadBalancerArn: !Ref myLoadBalancer
-  #     Port: 443
-  #     Protocol: HTTPS
-  #     DefaultActions:
-  #       - Type: forward
-  #         TargetGroupArn: !Ref myTargetGroup
+  ListenerHTTPS:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref Certificate
+      LoadBalancerArn: !Ref myLoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref myTargetGroup
 
-  # Certificate:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !GetAtt myLoadBalancer.DNSName
-  #     DomainValidationOptions:
-  #       - DomainName: !GetAtt myLoadBalancer.DNSName
-  #         ValidationDomain: !GetAtt myLoadBalancer.DNSName
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+
+  CNAMEDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId : !Ref HostedZoneId
+      Name: !Ref DomainName
+      ResourceRecords:
+      - !GetAtt myLoadBalancer.DNSName
+      TTL: 60
+      Type: CNAME
 
   LoadBalancerAPIDispatchRule:
     Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
@@ -99,6 +117,10 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
 
   myLambdaPermission:
     Type: AWS::Lambda::Permission
@@ -108,5 +130,9 @@ Resources:
       Principal: elasticloadbalancing.amazonaws.com
 
 Outputs:
-  DNSName:
+  ALBDNSName:
     Value: !GetAtt myLoadBalancer.DNSName
+  CustomDomainName:
+    Value: !Ref CNAMEDNSRecord
+
+
